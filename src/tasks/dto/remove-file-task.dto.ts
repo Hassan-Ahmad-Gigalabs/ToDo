@@ -1,12 +1,17 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Expose, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateTagDto {
+export class RemoveFileTaskDto {
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  id: number;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  text: string;
+  file: string;
 
   @Expose({ toPlainOnly: true })
   @Transform((value) => undefined)

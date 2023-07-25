@@ -6,7 +6,7 @@ import {
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
-import { Repository } from 'typeorm';
+import { Repository, IsNull, FindManyOptions } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCommentType, UpdateCommentType } from './types/comments.type';
 import { User } from 'src/users/entities/user.entity';
@@ -55,15 +55,27 @@ export class CommentsService {
     return this.commentRepo.save(body);
   }
 
-  async findAll() {
-    const comments = await this.commentRepo.find({
+  async findAll(id: number, pageNumber: number, itemsPerPage: number) {
+    const query: FindManyOptions<Comment> = {
+      where: {
+        parentId: IsNull(),
+        taskId: id,
+      },
       relations: {
         user: true,
-        children: true,
       },
-    });
+      order: {
+        createdAt: 'DESC',
+      },
+    };
+    if (pageNumber && itemsPerPage) {
+      query.skip = (pageNumber - 1) * itemsPerPage;
+      query.take = itemsPerPage;
+    }
+    const [comments, totalItems] = await this.commentRepo.findAndCount(query);
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
     if (!comments) throw new NotFoundException('No Comments found');
-    return comments;
+    return { data: comments, totalItems, totalPages };
   }
 
   async findOne(id: number) {

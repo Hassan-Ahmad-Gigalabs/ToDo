@@ -10,7 +10,12 @@ import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { User } from 'src/users/entities/user.entity';
-import { CreateTaskType, UpdateTaskType } from './types/tasks.type';
+import {
+  CreateTaskType,
+  UpdateTaskType,
+  UploadTaskType,
+} from './types/tasks.type';
+import { RemoveFileTaskDto } from './dto/remove-file-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -19,6 +24,26 @@ export class TasksService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     @InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
   ) {}
+
+  async removeFile(removeFileTaskDto: RemoveFileTaskDto) {
+    const { id, file } = removeFileTaskDto;
+    const task = await this.taskRepo.findOne({
+      where: { id },
+    });
+    task.uploads = task.uploads.filter((f) => f != file);
+    await this.taskRepo.save(task);
+    return { file, message: 'File removed successfully' };
+  }
+
+  async upload(uploadTask: UploadTaskType) {
+    const { id, name } = uploadTask;
+    const task = await this.taskRepo.findOne({
+      where: { id },
+    });
+    task.uploads.push(name);
+    await this.taskRepo.save(task);
+    return { file: name, message: 'File uploaded successfully' };
+  }
 
   async create(createTaskDto: CreateTaskDto) {
     const {
@@ -74,7 +99,6 @@ export class TasksService {
       relations: {
         tags: true,
         assignees: true,
-        comments: true,
         children: true,
       },
     });

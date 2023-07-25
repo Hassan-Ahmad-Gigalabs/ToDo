@@ -23,4 +23,9 @@ export type CreateTaskType = {
   endDate: Date;
 };
 
+export type UploadTaskType = {
+  id: number;
+  name: string;
+};
+
 export type UpdateTaskType = Partial<CreateTaskType>;

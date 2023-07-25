@@ -14,6 +14,7 @@ import {
   AfterLoad,
   AfterInsert,
 } from 'typeorm';
+import { State } from '../types/tasks.type';
 
 @Entity('task')
 export class Task {
@@ -23,13 +24,19 @@ export class Task {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'text', default: 'backlog' })
+  state: State;
+
+  @Column({ type: 'varchar', array: true, length: 100, default: [] })
+  uploads: string[];
+
+  @Column({ type: 'date', nullable: true })
   startDate: Date;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   endDate: Date;
 
   @OneToMany(() => Comment, (comment) => comment.task)

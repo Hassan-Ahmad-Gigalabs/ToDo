@@ -21,6 +21,9 @@ export class Comment {
   @Column({ type: 'varchar', length: 100 })
   text: string;
 
+  @Column({ type: 'int' })
+  taskId: number;
+
   @ManyToOne(() => Task, (task) => task.comments)
   task: Task;
 
@@ -33,7 +36,10 @@ export class Comment {
   @ManyToOne(() => Comment, (comment) => comment.children)
   parent: Comment;
 
-  @Column({ default: 0 })
+  @Column({ type: 'int', nullable: true })
+  parentId: number | null;
+
+  @Column({ type: 'int', default: 0 })
   numberOfChildren: number;
 
   @AfterLoad()

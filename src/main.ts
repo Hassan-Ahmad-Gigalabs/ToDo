@@ -8,7 +8,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.enableCors({ origin: 'http://localhost:5174', credentials: true });
+  app.enableCors({ origin: 'http://localhost:5000', credentials: true });
   app.useStaticAssets(path.join(__dirname, '../uploads'));
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new GlobalExceptionFilter());

@@ -27,7 +27,9 @@ export class Comment {
   @ManyToOne(() => Task, (task) => task.comments)
   task: Task;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @OneToMany(() => Comment, (comment) => comment.parent)

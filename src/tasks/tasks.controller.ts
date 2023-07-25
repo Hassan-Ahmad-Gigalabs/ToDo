@@ -38,7 +38,9 @@ export class TasksController {
         },
       }),
       fileFilter: (req, file, cb) => {
-        if (file.mimetype.match(/\/(jpg|jpeg|png|doc|xls|mp4)$/)) {
+        console.log('MIME', file.mimetype);
+
+        if (file.mimetype.match(/\/(jpg|jpeg|png|msword|xls|mp4)$/)) {
           cb(null, true);
         } else {
           cb(
